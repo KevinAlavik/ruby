@@ -4,9 +4,9 @@
 
 namespace Render
 {
-    Texture::Texture(const raylib::Image &image)
-        : texture_(image)
+    Texture::Texture(raylib::Image image)
     {
+        texture_ = ::LoadTextureFromImage(image);
         if (texture_.id == 0)
         {
             spdlog::error("Texture::Texture - failed to create Texture2D from image");

@@ -8,7 +8,7 @@ namespace Render
     class Texture
     {
     public:
-        explicit Texture(const raylib::Image &image);
+        explicit Texture(raylib::Image image);
         ~Texture();
 
         const raylib::Texture2D &GetTexture() const;

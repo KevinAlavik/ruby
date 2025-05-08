@@ -26,13 +26,14 @@ namespace Render
             throw std::runtime_error("Failed to load image: " + filePath);
         }
 
-        auto texture = std::make_unique<Texture>(img);
+        spdlog::trace("TextureManager::LoadTexture - loaded image {}, size: {}x{}", filePath, img.width, img.height);
+        Texture texture(img);
 
         spdlog::trace("TextureManager::LoadTexture - created Texture object for: {} (id={}, {}x{})",
-                      filePath, texture->GetTexture().id, texture->GetWidth(), texture->GetHeight());
+                      filePath, texture.GetTexture().id, texture.GetWidth(), texture.GetHeight());
 
-        const Texture &ref = *texture;
-        textures_.emplace(filePath, std::move(texture));
+        const Texture &ref = texture;
+        textures_.emplace(filePath, std::move(&texture));
         return ref;
     }
 
