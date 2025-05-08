@@ -10,10 +10,15 @@ namespace Render
     class TextureManager
     {
     public:
+        TextureManager() = default;
         ~TextureManager();
+
+        TextureManager(const TextureManager &) = delete;
+        TextureManager &operator=(const TextureManager &) = delete;
 
         const Texture &LoadTexture(const std::string &filePath);
         const Texture &GetTexture(const std::string &filePath) const;
+
         void UnloadAllTextures();
 
     private:

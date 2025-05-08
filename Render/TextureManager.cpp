@@ -14,26 +14,25 @@ namespace Render
         auto it = textures_.find(filePath);
         if (it != textures_.end())
         {
-            spdlog::trace("TextureManager::LoadTexture - returning cached texture: {}", filePath);
+            spdlog::trace("TextureManager::LoadTexture - Reusing cached texture: {}", filePath);
             return *it->second;
         }
 
-        spdlog::trace("TextureManager::LoadTexture - loading texture from: {}", filePath);
-        raylib::Image img(filePath);
-        if (!img.IsValid())
+        spdlog::trace("TextureManager::LoadTexture - Loading image from: {}", filePath);
+        raylib::Image image(filePath);
+
+        if (!image.IsValid())
         {
-            spdlog::error("TextureManager::LoadTexture - failed to load image: {}", filePath);
+            spdlog::error("TextureManager::LoadTexture - Invalid image: {}", filePath);
             throw std::runtime_error("Failed to load image: " + filePath);
         }
 
-        spdlog::trace("TextureManager::LoadTexture - loaded image {}, size: {}x{}", filePath, img.width, img.height);
-        Texture texture(img);
+        auto texture = std::make_unique<Texture>(image);
+        const Texture &ref = *texture;
 
-        spdlog::trace("TextureManager::LoadTexture - created Texture object for: {} (id={}, {}x{})",
-                      filePath, texture.GetTexture().id, texture.GetWidth(), texture.GetHeight());
+        textures_.emplace(filePath, std::move(texture));
+        spdlog::trace("TextureManager::LoadTexture - Texture loaded and stored: {}", filePath);
 
-        const Texture &ref = texture;
-        textures_.emplace(filePath, std::move(&texture));
         return ref;
     }
 
@@ -42,19 +41,16 @@ namespace Render
         auto it = textures_.find(filePath);
         if (it == textures_.end())
         {
-            spdlog::error("TextureManager::GetTexture - texture not found: {}", filePath);
+            spdlog::error("TextureManager::GetTexture - Texture not found: {}", filePath);
             throw std::runtime_error("Texture not found: " + filePath);
         }
+
         return *it->second;
     }
 
     void TextureManager::UnloadAllTextures()
     {
-        for (auto &pair : textures_)
-        {
-            pair.second.reset();
-        }
         textures_.clear();
-        spdlog::info("TextureManager::UnloadAllTextures - all textures unloaded.");
+        spdlog::info("TextureManager::UnloadAllTextures - All textures unloaded.");
     }
 }

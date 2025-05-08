@@ -54,9 +54,6 @@ namespace Core
         /* Internal Textures */
         const Render::Texture *tex_raylibLogo = nullptr;
 
-        /* Raylib Textures */
-        const raylib::Texture2D &raylibTexture = tex_raylibLogo->GetTexture();
-
         bool LoadResources()
         {
             try
@@ -87,9 +84,10 @@ namespace Core
             window.ClearBackground(RAYWHITE);
             if (tex_raylibLogo && tex_raylibLogo->IsValid())
             {
-                raylibTexture.Draw(
-                    (SCREEN_WIDTH - raylibTexture.width) / 2,
-                    (SCREEN_HEIGHT - raylibTexture.height) / 2);
+                // Draw the texture at the center of the screen
+                tex_raylibLogo->GetTexture().Draw(
+                    (SCREEN_WIDTH - tex_raylibLogo->GetWidth()) / 2,
+                    (SCREEN_HEIGHT - tex_raylibLogo->GetHeight()) / 2);
             }
             window.EndDrawing();
         }
